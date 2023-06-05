@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using System.Data.Entity;
+using System.Threading.Tasks;
 
 namespace Data.Context
 {
@@ -11,11 +12,11 @@ namespace Data.Context
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Actor>()
-                .HasRequired(a => a.Movie)
-                .WithMany(m => m.Actors)
-                .HasForeignKey(a => a.MovieId)
-                .WillCascadeOnDelete(false);
+            modelBuilder.Entity<Actor>();
+            modelBuilder.Entity<Studio>();
+            modelBuilder.Entity<Movie>();
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
