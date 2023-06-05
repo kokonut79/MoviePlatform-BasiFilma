@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MVC.Models.Actor;
 using MVC.Models;
-using MVC.Models.Studio;
 using Newtonsoft.Json;
-using System.Net;
 using System.Net.Http.Headers;
+using MVC.Models.Movie;
 
 namespace MVC.Controllers
 {
-    public class StudioController : Controller
+    public class MovieController : Controller
     {
         private readonly Uri url = new Uri("http://localhost:5263");
-        public async Task<ActionResult> Index(IndexVM model)
+        public async Task<ActionResult> Index(Models.Movie.IndexVM model)
         {
             using (var client = new HttpClient())
             {
@@ -18,24 +18,24 @@ namespace MVC.Controllers
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage response = await client.GetAsync("api/studio/Get");
+                HttpResponseMessage response = await client.GetAsync("api/movie/Get");
                 string jsonString = await response.Content.ReadAsStringAsync();
-                List<StudioVM> responseData = JsonConvert.DeserializeObject<List<StudioVM>>(jsonString);
+                List<MovieVM> responseData = JsonConvert.DeserializeObject<List<MovieVM>>(jsonString);
 
                 model.Pager = model.Pager ?? new PagerVM();
 
                 model.Pager.Page = model.Pager.Page <= 0 ? 1 : model.Pager.Page;
                 model.Pager.ItemsPerPage = model.Pager.ItemsPerPage <= 0 ? 12 : model.Pager.ItemsPerPage;
 
-                model.Filter = model.Filter ?? new FilterVM();
+                model.Filter = model.Filter ?? new Models.Movie.FilterVM();
 
                 var filteredData = responseData.Where(u =>
-                    string.IsNullOrEmpty(model.Filter.Name) || u.Name.Contains(model.Filter.Name)).ToList();
+                    string.IsNullOrEmpty(model.Filter.Title) || u.Title.Contains(model.Filter.Title)).ToList();
 
                 model.Pager.PagesCount = (int)Math.Ceiling(filteredData.Count / (double)model.Pager.ItemsPerPage);
 
                 model.Items = filteredData
-                    .OrderBy(i => i.StudioID)
+                    .OrderBy(i => i.MovieId)
                     .Skip(model.Pager.ItemsPerPage * (model.Pager.Page - 1))
                     .Take(model.Pager.ItemsPerPage)
                     .ToList();
@@ -43,7 +43,6 @@ namespace MVC.Controllers
                 return View(model);
             }
         }
-
         [HttpGet]
         public ActionResult Create()
         {
@@ -51,7 +50,7 @@ namespace MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(StudioVM model)
+        public async Task<ActionResult> Create(MovieVM model)
         {
             try
             {
@@ -66,10 +65,10 @@ namespace MVC.Controllers
                     var bytecontent = new ByteArrayContent(buffer);
                     bytecontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                    HttpResponseMessage response = await client.PostAsync("api/studio/Save", bytecontent);
+                    HttpResponseMessage response = await client.PostAsync("api/movie/Save", bytecontent);
 
                     string jsonString = await response.Content.ReadAsStringAsync();
-                    var responseData = JsonConvert.DeserializeObject<StudioVM>(jsonString);
+                    var responseData = JsonConvert.DeserializeObject<MovieVM>(jsonString);
                 }
 
                 return RedirectToAction("Index");
@@ -91,16 +90,16 @@ namespace MVC.Controllers
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 // make the request
-                HttpResponseMessage response = await client.GetAsync("api/studio/GetById/" + id);
+                HttpResponseMessage response = await client.GetAsync("api/movie/GetById/" + id);
 
                 // parse the response and return data
                 string jsonString = await response.Content.ReadAsStringAsync();
-                var responseData = JsonConvert.DeserializeObject<StudioVM>(jsonString);
+                var responseData = JsonConvert.DeserializeObject<MovieVM>(jsonString);
                 return View(responseData);
             }
         }
         [HttpPost]
-        public async Task<ActionResult> Edit(StudioVM model)
+        public async Task<ActionResult> Edit(MovieVM model)
         {
             try
             {
@@ -117,7 +116,7 @@ namespace MVC.Controllers
                     byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
                     // make the request // Save or Update?
-                    HttpResponseMessage response = await client.PostAsync("api/studio/Edit", byteContent);
+                    HttpResponseMessage response = await client.PostAsync("api/movie/Edit", byteContent);
 
                 }
 
@@ -137,7 +136,7 @@ namespace MVC.Controllers
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage response = await client.DeleteAsync("api/studio/Delete/" + id);
+                HttpResponseMessage response = await client.DeleteAsync("api/movie/Delete/" + id);
 
                 return RedirectToAction("Index");
             }

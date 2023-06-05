@@ -50,6 +50,7 @@ namespace AppService.Implementation
                         Title = movie.Title,
                         Description = movie.Description,
                         Budget = movie.Budget,
+                        Genre = movie.Genre,
                         StudioId = movie.StudioId,
 
                     };
@@ -74,6 +75,7 @@ namespace AppService.Implementation
                         Title = movieDTO.Title,
                         Description = movieDTO.Description,
                         Budget = movieDTO.Budget,
+                        Genre = movieDTO.Genre,
                         StudioId = movieDTO.StudioId
                     };
                     unitOfWork.MovieRepository.Insert(movie);
@@ -98,6 +100,7 @@ namespace AppService.Implementation
                         movie.Title = movieDTO.Title;
                         movie.Description = movieDTO.Description;
                         movie.Budget = movieDTO.Budget;
+                        movie.Genre = movieDTO.Genre;
                         movie.StudioId = movieDTO.StudioId;
 
                         unitOfWork.MovieRepository.Update(movie);

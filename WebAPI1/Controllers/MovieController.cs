@@ -7,10 +7,10 @@ using WebAPI.Messages;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/")]
     [ApiController]
-    //[Authorize]
-    public class MovieController : Controller
+    [Authorize]
+    public class MovieController : ControllerBase
     {
         private readonly MovieManagementService _movieManagementService;
 
@@ -20,21 +20,24 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/movie")]
+        [Route("[action]")]
+        [AllowAnonymous]
         public IActionResult Get()
         {
-            return Json(_movieManagementService.Get());
+            return Ok(_movieManagementService.Get());
         }
 
         [HttpGet]
-        [Route("api/movie/{id}")]
-        public IActionResult Get(int id)
+        [Route("[action]/{id}")]
+        [AllowAnonymous]
+        public IActionResult GetById(int id)
         {
-            return Json(_movieManagementService.GetById(id));
+            return Ok(_movieManagementService.GetById(id));
         }
 
         [HttpPost]
-        [Route("api/movie/Save")]
+        [Route("[action]")]
+        [AllowAnonymous]
         public IActionResult Save([FromBody] MovieDTO movieDTO)
         {
             if (!ModelState.IsValid)
@@ -55,11 +58,12 @@ namespace WebAPI.Controllers
                 response.Error = "Movie was not saved.";
             }
 
-            return Json(response);
+            return Ok(response);
         }
 
-        [HttpPut]
-        [Route("api/movie/Edit")]
+        [HttpPost]
+        [Route("Edit")]
+        [AllowAnonymous]
         public IActionResult Edit([FromBody] MovieDTO movieDTO)
         {
             ResponseMessage response = new ResponseMessage();
@@ -67,11 +71,7 @@ namespace WebAPI.Controllers
 
             if (!ModelState.IsValid)
             {
-                return Json(new ResponseMessage
-                {
-                    Code = 500,
-                    Error = "Data is not valid !"
-                });
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             if (_movieManagementService.Edit(movieDTO))
@@ -85,11 +85,12 @@ namespace WebAPI.Controllers
                 response.Body = "Movie was not edited.";
             }
 
-            return Json(response);
+            return Ok(response);
         }
 
         [HttpDelete]
-        [Route("api/movie/Delete/{id}")]
+        [Route("[action]/{id}")]
+        [AllowAnonymous]
         public IActionResult Delete(int id)
         {
             ResponseMessage response = new ResponseMessage();
@@ -105,7 +106,7 @@ namespace WebAPI.Controllers
                 response.Body = "Movie is not deleted.";
             }
 
-            return Json(response);
+            return Ok(response);
         }
     }
 }

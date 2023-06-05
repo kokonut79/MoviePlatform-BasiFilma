@@ -1,5 +1,6 @@
 ﻿using AppService.DTOs;
 using AppService.Implementation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Messages;
@@ -8,7 +9,8 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ActorController : Controller
+    [Authorize]
+    public class ActorController : ControllerBase
     {
         private readonly ActorManagementService _actorManagementService;
 
@@ -18,31 +20,30 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/actor")]
+        [Route("[action]")]
+        [AllowAnonymous]
         public IActionResult Get()
         {
 
-            return Json(_actorManagementService.Get());
+            return Ok(_actorManagementService.Get());
         }
 
         [HttpGet]
-        [Route("api/actor/{id}")]
+        [Route("[action]/{id}")]
+        [AllowAnonymous]
         public IActionResult GetById(int id)
         {
-            return Json(_actorManagementService.GetById(id));
+            return Ok(_actorManagementService.GetById(id));
         }
 
         [HttpPost]
-        [Route("api/actor/Save")]
+        [Route("[action]")]
+        [AllowAnonymous]
         public IActionResult Save(ActorDTO actorDTO)
         {
             if (!actorDTO.Validate())
             {
-                return Json(new ResponseMessage
-                {
-                    Code = 500,
-                    Error = "Data is not valid !  "
-                });
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             ResponseMessage response = new ResponseMessage();
@@ -57,11 +58,12 @@ namespace WebAPI.Controllers
                 response.Error = "Actor was not saved.";
             }
 
-            return Json(response);
+            return Ok(response);
         }
 
-        [HttpPut]
-        [Route("api/actor/Edit")]
+        [HttpPost]
+        [Route("Edit")]
+        [AllowAnonymous]
         public IActionResult Edit([FromBody] ActorDTO actorDTO)
         {
             ResponseMessage response = new ResponseMessage();
@@ -69,11 +71,7 @@ namespace WebAPI.Controllers
 
             if (!actorDTO.Validate())
             {
-                return Json(new ResponseMessage
-                {
-                    Code = 500,
-                    Error = "Data is not valid !"
-                });
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             if (_actorManagementService.Edit(actorDTO))
@@ -87,11 +85,12 @@ namespace WebAPI.Controllers
                 response.Body = "Actor was not edited.";
             }
 
-            return Json(response);
+            return Ok(response);
         }
 
         [HttpDelete]
-        [Route("api/actor/{id}")]
+        [Route("[action]/{id}")]
+        [AllowAnonymous]
         public IActionResult Delete(int id)
         {
             ResponseMessage response = new ResponseMessage();
@@ -107,7 +106,7 @@ namespace WebAPI.Controllers
                 response.Body = "Actor is not deleted.";
             }
 
-            return Json(response);
+            return Ok(response);
         }
     }
 }

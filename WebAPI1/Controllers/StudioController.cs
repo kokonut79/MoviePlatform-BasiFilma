@@ -6,10 +6,10 @@ using WebAPI.Messages;
 
 namespace WebAPI.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]/")]
-    public class StudioController : Controller
+    public class StudioController : ControllerBase
     {
         private readonly StudioManagementService _studioManagementService;
         public StudioController()
@@ -18,29 +18,34 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        
+        [Route("[action]")]
+        [AllowAnonymous]
         public IActionResult Get()
         {
-            return Json(_studioManagementService.Get());
+            return Ok(_studioManagementService.Get());
         }
 
-        [HttpGet("{id}")]
-       
+        [HttpGet]
+        [Route("[action]/{id}")]
+        [AllowAnonymous]
         public IActionResult GetById(int id)
         {
-            return Json(_studioManagementService.GetById(id));
+            Console.WriteLine(id);
+            if (id >=1)
+            {
+                return Ok(_studioManagementService.GetById(id));
+            }
+            return BadRequest();
         }
 
         [HttpPost]
+        [Route("[action]")]
+        [AllowAnonymous]
         public IActionResult Save([FromBody] StudioDTO studioDTO)
         {
             if (!ModelState.IsValid)
             {
-                return Json(new ResponseMessage
-                {
-                    Code = 500,
-                    Error = "Data is not valid !  "
-                });
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             ResponseMessage response = new ResponseMessage();
@@ -55,23 +60,21 @@ namespace WebAPI.Controllers
                 response.Error = "Studio was not saved.";
             }
 
-            return Json(response);
+            return Ok(response);
         }
 
-        [HttpPut]
-        [Route("Edit/{id}")]
-        public IActionResult Edit(int id, [FromBody] StudioDTO studioDTO)
+        [HttpPost]
+        [Route("Edit")]
+        [AllowAnonymous]
+        public IActionResult Edit([FromBody] StudioDTO studioDTO)
         {
+            Console.WriteLine("basimamata");
+            Console.WriteLine(studioDTO.StudioID);
             ResponseMessage response = new ResponseMessage();
-            if (studioDTO.StudioID == id)
-            {
+            
                 if (!ModelState.IsValid)
                 {
-                    return Json(new ResponseMessage
-                    {
-                        Code = 500,
-                        Error = "Data is not valid !"
-                    });
+                    return StatusCode(StatusCodes.Status500InternalServerError);
                 }
 
                 if (_studioManagementService.Edit(studioDTO))
@@ -84,13 +87,14 @@ namespace WebAPI.Controllers
                     response.Code = 500;
                     response.Body = "Studio was not edited.";
                 }
-            }
-            return Json(response);
+            return Ok(response);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("[action]/{id}")]
+        [AllowAnonymous]
         public IActionResult Delete(int id)
-        {
+        { 
             ResponseMessage response = new ResponseMessage();
 
             if (_studioManagementService.Delete(id))
@@ -104,7 +108,7 @@ namespace WebAPI.Controllers
                 response.Body = "Studio is not deleted.";
             }
 
-            return Json(response);
+            return Ok(response);
         }
     }
 }

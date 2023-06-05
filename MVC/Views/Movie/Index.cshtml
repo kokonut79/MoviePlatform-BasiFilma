@@ -1,0 +1,75 @@
+﻿@model MVC.Models.Movie.IndexVM
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<form class="d-flex mt-3" role="search" action="/Movie/Index">
+    @Html.HiddenFor(m => m.Pager.ItemsPerPage)
+    @Html.TextBoxFor(m => m.Filter.Title, new { placeholder = "Search by Movie Name", @class = "form-control me-2" })
+    <button class="btn btn-outline-success" type="submit" value="Filter">Search</button>
+</form>
+
+<br />
+
+<table class="table">
+    <tr>
+        <th>
+            Name
+        </th>
+
+        <th>
+            Description
+        </th>
+        <th>
+            Budget
+        </th>
+        <th>
+            Genre
+        </th>
+        <th>
+            StudioId
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.Items)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Budget)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StudioId)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.MovieId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.MovieId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.MovieId })
+            </td>
+        </tr>
+    }
+</table>
+
+<div class="row pager">
+    <div class="col-3">
+        @{
+            Html.RenderPartial("/Views/Shared/PagerVM.cshtml", Model.Pager);
+        }
+    </div>
+</div>
