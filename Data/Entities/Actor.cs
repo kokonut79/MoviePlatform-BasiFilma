@@ -20,7 +20,7 @@ namespace Data.Entities
         public DateTime DOB  { get; set; }
         public string Email { get; set; }
         public int? MovieId { get; set; }
-        public Movie Movie { get; set; }
+        public Movie? Movie { get; set; }
 
 
     }

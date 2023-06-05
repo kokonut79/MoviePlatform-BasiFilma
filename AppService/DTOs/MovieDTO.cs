@@ -14,9 +14,7 @@ namespace AppService.DTOs
         public string Description { get; set; }
         public decimal Budget { get; set; }
         public string Genre { get; set; }
-        public int StudioId { get; set; }
-        public Studio Studio { get; set; }
-
-        public List<Actor> actors { get; set; }
+        public int? StudioId { get; set; }
+       
     }
 }

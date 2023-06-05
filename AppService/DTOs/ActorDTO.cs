@@ -14,8 +14,10 @@ namespace AppService.DTOs
         public string Last_Name  { get; set; }
         public string Email { get; set; }
         public int ? MovieId { get; set; }
-        public Movie Movie { get; set; }
-        
-      
+
+        public bool Validate()
+        {
+            return !String.IsNullOrEmpty(First_Name);
+        }
     }
 }

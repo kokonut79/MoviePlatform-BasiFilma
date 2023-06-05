@@ -37,25 +37,15 @@ namespace AppService.Implementation
             using (UnitOfWork unitOfWork = new UnitOfWork())
             {
                 Studio studios = unitOfWork.StudioRepository.GetByID(id);
-                List<Movie> workers = unitOfWork.MovieRepository.Get().ToList();
-                List<Movie> createdMovies = new List<Movie>();
                 if (studios != null)
                 {
-                    foreach (var item in workers)
-                    {
-                        if (item.StudioId == studios.Id)
-                        {
-                            createdMovies.Add(item);
-                        }
-
-
-                    }
+                   
                     studioDTO = new StudioDTO()
                     {
                         StudioID = studios.Id,
                         Name = studios.Name,
                         Description = studios.Description,
-                        Movies = createdMovies
+                      
                     };
                 }
             }

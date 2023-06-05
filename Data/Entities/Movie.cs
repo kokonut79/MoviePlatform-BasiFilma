@@ -19,8 +19,8 @@ namespace Data.Entities
         public DateTime TimeOfRelease { get; set; }
         public decimal Budget { get; set; }
         public string Genre { get; set; }
-        public int StudioId { get; set; }
-        public Studio Studio { get; set; }
+        public int? StudioId { get; set; }
+        public Studio? Studio { get; set; }
 
 
     }
