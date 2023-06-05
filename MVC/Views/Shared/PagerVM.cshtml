@@ -1,0 +1,53 @@
+﻿@model MVC.Models.PagerVM
+
+@{
+    var controller = ViewContext.RouteData.Values["controller"].ToString();
+    var action = ViewContext.RouteData.Values["action"].ToString();
+
+    var queryString = ViewContext.HttpContext.Request.Query;
+    var formStatePager = "";
+    var formStateItemsPerPage = "";
+
+    foreach (var key in queryString.Keys)
+    {
+        if (key != "Pager.Page")
+        {
+            formStatePager += $"{key}={queryString[key]}&";
+        }
+        if (key != "Pager.Page" && key != "Pager.ItemsPerPage")
+        {
+            formStateItemsPerPage += $"{key}={queryString[key]}&";
+        }
+    }
+}
+
+<nav aria-label="...">
+    <ul class="pagination pagination-sm">
+        @for (int i = 1; i <= Model.PagesCount; i++)
+        {
+            <li class="page-item">
+                <a class="page-link" href="/@controller/@action?@formStatePager&Pager.Page=@i">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+<script>
+    function ddlItemsPerPage_OnChange() {
+        let control = document.getElementById("ddlItemsPerPage");
+        let itemsPerPage = control.value;
+        let url = `/@controller/@action?@formStateItemsPerPage&Pager.ItemsPerPage=${itemsPerPage}`;
+        document.location.href = url;
+    }
+
+    window.addEventListener('load', (event) => {
+        let ddlItemsPerPage = document.getElementById("ddlItemsPerPage");
+        ddlItemsPerPage.value = @Model.ItemsPerPage;
+    });
+</script>
+
+<select id="ddlItemsPerPage" onchange="ddlItemsPerPage_OnChange()">
+    <option value="4">4</option>
+    <option value="8">8</option>
+    <option value="12">12</option>
+</select>

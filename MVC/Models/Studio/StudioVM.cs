@@ -9,7 +9,6 @@ namespace MVC.Models.Studio
         public string Description { get; set; }
 
         public StudioVM() { }
-
         public StudioVM(StudioDTO studioDTO)
         {
             StudioID = studioDTO.StudioID;

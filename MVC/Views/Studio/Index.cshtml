@@ -1,35 +1,37 @@
-﻿@model IEnumerable<MVC.Models.Studio.StudioVM>
+﻿@model MVC.Models.Studio.IndexVM
 
 @{
-    ViewData["Title"] = "Index";
+    ViewBag.Title = "Index";
 }
 
-<h1>Index</h1>
+<h2>Index</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @Html.ActionLink("Create New", "Create")
 </p>
+
+<form class="d-flex mt-3" role="search" action="/Hospital/Index">
+    @Html.HiddenFor(m => m.Pager.ItemsPerPage)
+    @Html.TextBoxFor(m => m.Filter.Name, new { placeholder = "Search by Hospital Name", @class = "form-control me-2" })
+    <button class="btn btn-outline-success" type="submit" value="Filter">Search</button>
+</form>
+
+<br />
+
 <table class="table">
-    <thead>
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            Description
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.Items)
+    {
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.StudioID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.StudioID)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -37,11 +39,21 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new {  id=item.StudioID }) |
-                    @Html.ActionLink("Details", "Details", new { id=item.StudioID }) |
-                    @Html.ActionLink("Delete", "Delete", new { id=item.StudioID })
+                @Html.ActionLink("Edit", "Edit", new { id = item.StudioID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.StudioID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.StudioID })
             </td>
         </tr>
-}
-    </tbody>
+    }
+
+
+
 </table>
+
+<div class="row pager">
+    <div class="col-3">
+        @{
+            Html.RenderPartial("/Views/Shared/PagerVM.cshtml", Model.Pager);
+        }
+    </div>
+</div>
