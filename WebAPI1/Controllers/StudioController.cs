@@ -32,7 +32,6 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-       
         public IActionResult Save([FromBody] StudioDTO studioDTO)
         {
             if (!ModelState.IsValid)
@@ -60,6 +59,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
+        [Route("Edit/{id}")]
         public IActionResult Edit(int id, [FromBody] StudioDTO studioDTO)
         {
             ResponseMessage response = new ResponseMessage();

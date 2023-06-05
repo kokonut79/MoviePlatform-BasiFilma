@@ -44,22 +44,6 @@ namespace MVC.Controllers
             }
         }
 
-        public async Task<ActionResult> Details(int id)
-        {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = url;
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage response = await client.GetAsync("" + id);
-                string jsonString = await response.Content.ReadAsStringAsync();
-                var responseData = JsonConvert.DeserializeObject<StudioVM>(jsonString);
-
-                return View(responseData);
-            }
-        }
-
         [HttpGet]
         public ActionResult Create()
         {
@@ -107,7 +91,7 @@ namespace MVC.Controllers
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 // make the request
-                HttpResponseMessage response = await client.GetAsync("" + id);
+                HttpResponseMessage response = await client.GetAsync("Studio/Edit/" + id);
 
                 // parse the response and return data
                 string jsonString = await response.Content.ReadAsStringAsync();
