@@ -10,9 +10,9 @@
     @Html.ActionLink("Create New", "Create")
 </p>
 
-<form class="d-flex mt-3" role="search" action="/Hospital/Index">
+<form class="d-flex mt-3" role="search" action="/Actor/Index">
     @Html.HiddenFor(m => m.Pager.ItemsPerPage)
-    @Html.TextBoxFor(m => m.Filter.First_Name, new { placeholder = "Search by First Name", @class = "form-control me-2" })
+    @Html.TextBoxFor(m => m.Filter.First_Name, new { placeholder = "Search by Movie Name", @class = "form-control me-2" })
     <button class="btn btn-outline-success" type="submit" value="Filter">Search</button>
 </form>
 
@@ -21,14 +21,19 @@
 <table class="table">
     <tr>
         <th>
-            First Name
+            First_Name
+        </th>
+
+        <th>
+            Last_Name
         </th>
         <th>
-           Last Name
+            Email
         </th>
         <th>
             MovieId
         </th>
+       
         <th></th>
     </tr>
 
@@ -42,6 +47,9 @@
                 @Html.DisplayFor(modelItem => item.Last_Name)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.MovieId)
             </td>
             <td>
@@ -51,9 +59,6 @@
             </td>
         </tr>
     }
-
-
-
 </table>
 
 <div class="row pager">
